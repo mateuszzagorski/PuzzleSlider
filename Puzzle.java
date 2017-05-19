@@ -237,25 +237,28 @@ public class Puzzle extends GraphStateImpl {
         setHFunction(new StateFunction());
     }
 	public static void main(String[] arg) {
-		for (int i = 0; i < 4; i++) {
-
+		double[] closed = new double[2];
+		
+		for (int i = 0; i < 10; i++) {
 			Puzzle puzzle = new Puzzle();
-			
-			puzzle.Mixing(puzzle, 10);
+			puzzle.Mixing(puzzle, 1000);
 			StateFunction[] heuristics = {new HFunctionMisplacedTiles(), new HFunctionManhattan()};
+			int j = 0;
 			for(StateFunction h: heuristics)
 			{
 				Puzzle.setHFunction(h);
 				GraphSearchAlgorithm alg = new AStar(puzzle);
 				alg.execute();
 				
+				
+				
 				Puzzle solution = (Puzzle)alg.getSolutions().get(0);
 				System.out.println("\n\nSOLUTION:\n");
 				System.out.println(solution);
-				//System.out.println("Wrong placed tiles: " + puzzle.MissPlacedtiles());
 				
 				System.out.println("Time: " + alg.getDurationTime() );
 				System.out.println("Closed: " + alg.getClosedStatesCount());
+				closed[j++] = alg.getClosedStatesCount();
 				System.out.println("Open: " + alg.getOpenSet().size());
 				System.out.println("Solution: " + alg.getSolutions().size());
 				System.out.println("Path length: " + solution.getPath().size());
@@ -263,8 +266,11 @@ public class Puzzle extends GraphStateImpl {
 				//System.out.println(solution.getPath());
 				System.out.println(solution.getMovesAlongPath());
                 System.out.println("Heuristic: " + h.getClass());
-System.out.println("H: " + solution.getH() + "\n-------------------------------");
 			}
+			
 		}
+		closed[0] /= 10;
+		closed[1] /= 10;
+		System.out.println(Arrays.toString(closed));
 	}
 }
